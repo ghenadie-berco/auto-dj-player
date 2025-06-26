@@ -1,6 +1,14 @@
 <h2>{{ label() }}</h2>
 <h3>{{ _internalSong()?.title ?? 'No Track' }}</h3>
 <div #waveSurferContainer class="flex-stretch wavesurfer"></div>
-<button (click)="onPlay()" [disabled]="!_internalSong()">Play</button>
-<button (click)="onPause()" [disabled]="!_internalSong()">Pause</button>
-<button (click)="onStop()" [disabled]="!_internalSong()">Stop</button>
+<div class="flex-row flex-stretch flex-gap">
+    <!-- Time Format: mm:ss -->
+    <div>Total Time: {{ totalTime() | songTime }}</div>
+    <div>Current Time: {{ currentTime() | songTime }}</div>
+    <div>Remaining Time: {{ remainingTime() | songTime }}</div>
+</div>
+<div class="flex-row flex-stretch flex-gap">
+    <button (click)="onPlay()" [disabled]="!_internalSong()">Play</button>
+    <button (click)="onPause()" [disabled]="!_internalSong()">Pause</button>
+    <button (click)="onStop()" [disabled]="!_internalSong()">Stop</button>
+</div>

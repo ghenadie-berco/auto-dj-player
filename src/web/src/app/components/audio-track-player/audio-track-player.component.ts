@@ -4,45 +4,58 @@ import {
   ElementRef,
   input,
   OnInit,
+  output,
   signal,
   viewChild,
-  ViewEncapsulation,
 } from '@angular/core';
 import { Song } from '../../app.interfaces';
 import WaveSurfer from 'wavesurfer.js';
+import { SongTimePipe } from '../../pipes/song-time.pipe';
 
 @Component({
   selector: 'app-audio-track-player',
-  imports: [],
+  imports: [SongTimePipe],
   templateUrl: './audio-track-player.component.html',
   styleUrl: './audio-track-player.component.scss',
-  encapsulation: ViewEncapsulation.None,
 })
 export class AudioTrackPlayerComponent implements OnInit, AfterViewInit {
   public label = input.required<string>();
   public volume = input.required<number>();
+  public fadeTime = input.required<number>();
+  public fadeTimeReached = output<void>();
 
   public _internalSong = signal<Song | null>(null);
   public _internalVolume = 0;
   public _waveSurferContainer = viewChild<ElementRef<HTMLDivElement>>(
     'waveSurferContainer'
   );
+  public totalTime = signal(0);
+  public currentTime = signal(0);
+  public remainingTime = signal(0);
   private _waveSurfer: WaveSurfer | null = null;
+  private fadeOutNotified = false;
 
   public loadNewTrack(song: Song, volume: number) {
     this._internalSong.set(song);
     this._internalVolume = volume;
     if (this._waveSurfer) {
       this._waveSurfer.load(song.src);
+      this.computeSongTime();
     }
   }
 
   public setVolume(volume: number) {
     this._internalVolume = volume;
-    // if (this._internalAudio) {
-    //   const audioVolume = this._internalVolume === 0 ? 0 : this._internalVolume / 100;
-    //   this._internalAudio.fade(this._internalAudio.volume(), audioVolume, 10);
-    // }
+    if (this._waveSurfer) {
+      this._waveSurfer.setVolume(volume === 0 ? 0 : volume / 100);
+    }
+  }
+
+  public getRemainingTime() {
+    if (!this._waveSurfer) {
+      return 0;
+    }
+    return this._waveSurfer.getDuration() - this._waveSurfer.getCurrentTime();
   }
 
   // [ Internal ]
@@ -59,6 +72,15 @@ export class AudioTrackPlayerComponent implements OnInit, AfterViewInit {
       barWidth: 2,
       barGap: 1,
       barRadius: 2,
+      sampleRate: 44100,
+      normalize: true,
+      minPxPerSec: 100,
+    });
+    this._waveSurfer.once('ready', () => {
+      this.computeSongTime();
+    });
+    this._waveSurfer.on('timeupdate', () => {
+      this.computeSongTime();
     });
   }
 
@@ -67,6 +89,9 @@ export class AudioTrackPlayerComponent implements OnInit, AfterViewInit {
   public onPlay() {
     if (this._waveSurfer) {
       this._waveSurfer.play();
+      this._waveSurfer.on('timeupdate', () => {
+        this.notifyWhenFadeTimeReached();
+      });
     }
   }
 
@@ -79,6 +104,24 @@ export class AudioTrackPlayerComponent implements OnInit, AfterViewInit {
   public onStop() {
     if (this._waveSurfer) {
       this._waveSurfer.stop();
+    }
+  }
+
+  // Helpers
+
+  private computeSongTime() {
+    if (!this._waveSurfer) {
+      return;
+    }
+    this.totalTime.set(this._waveSurfer.getDuration());
+    this.currentTime.set(this._waveSurfer.getCurrentTime());
+    this.remainingTime.set(this.getRemainingTime());
+  }
+
+  private notifyWhenFadeTimeReached() {
+    if (!this.fadeOutNotified && this.remainingTime() <= this.fadeTime()) {
+      this.fadeTimeReached.emit();
+      this.fadeOutNotified = true;
     }
   }
 }

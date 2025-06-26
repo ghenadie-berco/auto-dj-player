@@ -5,7 +5,9 @@
       #playerA 
       class="player-a flex-stretch zzz" 
       [label]="'Deck A'" 
-      [volume]="100">
+      [volume]="100"
+      [fadeTime]="30"
+      (fadeTimeReached)="onFadeTimeReachedDeckA()">
     </app-audio-track-player>
     <!-- Mixer -->
     <app-two-channel-mixer 
@@ -23,7 +25,9 @@
       #playerB 
       class="player-a flex-stretch zzz" 
       [label]="'Deck B'" 
-      [volume]="100">
+      [volume]="100"
+      [fadeTime]="30"
+      (fadeTimeReached)="onFadeTimeReachedDeckB()">
     </app-audio-track-player>
   </div>
   <!-- Playlist -->

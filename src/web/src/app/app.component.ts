@@ -38,4 +38,12 @@ export class AppComponent {
   public onMixerRightChannelVolumeChange(volume: number) {
     this.playerBRef()?.setVolume(volume);
   }
+
+  public onFadeTimeReachedDeckA() {
+    console.log('Fade time reached for Deck A');
+  }
+
+  public onFadeTimeReachedDeckB() {
+    console.log('Fade time reached for Deck B');
+  }
 }

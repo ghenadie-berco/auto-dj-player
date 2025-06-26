@@ -20,7 +20,6 @@ export class TwoChannelMixerComponent implements OnInit {
 
   public ngOnInit() {
     this._crossFaderValue = this.computeCrossFaderValue();
-    console.log('Crossfader Value: ', this._crossFaderValue);
   }
 
   public getLeftChannelVolume() {
