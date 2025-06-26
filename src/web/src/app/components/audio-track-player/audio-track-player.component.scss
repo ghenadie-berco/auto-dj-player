@@ -1,0 +1,11 @@
+:host {
+    height        : 400px;
+    width         : 400px;
+    display       : flex;
+    flex-direction: column;
+    gap           : 1rem;
+}
+
+.wavesurfer {
+    overflow: hidden;
+}
