@@ -1,0 +1,20 @@
+<div class="flex-column flex-stretch flex-gap">
+    <div class="flex-column flex-stretch flex-gap">
+        <h2>Playlist</h2>
+        <div class="flex-column flex-stretch flex-gap">
+            @for(song of songs; track song.title) {
+            <div class="flex-row flex-stretch flex-gap" [ngClass]="{ 'selected': selectedSong === song }">
+                <div class="flex-stretch">
+                    {{ song.title }}
+                </div>
+                <button (click)="selectedSong = song">Select</button>
+            </div>
+            }
+        </div>
+    </div>
+    <div class="flex-row flex-stretch flex-gap">
+        <h2>Load to Deck</h2>
+        <button (click)="onLoadToDeckA()" [disabled]="!selectedSong">Load to Deck A</button>
+        <button (click)="onLoadToDeckB()" [disabled]="!selectedSong">Load to Deck B</button>
+    </div>
+</div>

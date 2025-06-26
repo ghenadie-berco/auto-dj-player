@@ -6,3 +6,25 @@ html, body {
   font-family: Roboto, 'Helvetica Neue', sans-serif;
   box-sizing: border-box;
 }
+
+.flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.flex-row {
+  display: flex;
+  flex-direction: row;
+}
+
+.flex-stretch {
+  flex: 1 1 auto;
+}
+
+.flex-gap {
+  gap: 1rem;
+}
+
+.zzz {
+  border: 1px solid red;
+}

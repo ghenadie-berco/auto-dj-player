@@ -1,0 +1,7 @@
+<div>
+    <h2>{{ label() }}</h2>
+    <h3>{{ _internalSong()?.title ?? 'No Track' }}</h3>
+    <button (click)="onPlay()" [disabled]="!_internalSong()">Play</button>
+    <button (click)="onPause()" [disabled]="!_internalSong()">Pause</button>
+    <button (click)="onStop()" [disabled]="!_internalSong()">Stop</button>
+</div>

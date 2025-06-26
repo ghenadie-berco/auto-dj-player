@@ -1,7 +1,33 @@
-<iframe
-  src="https://open.spotify.com/embed/playlist/1boTpdVoSi9PwooZ0zxl4L?utm_source=generator&theme=0"
-  frameBorder="0"
-  allowfullscreen=""
-  allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-  loading="lazy"
-></iframe>
+<div class="flex-column flex-stretch flex-gap">
+  <div class="flex-row flex-stretch flex-gap">
+    <!-- Player A -->
+    <app-audio-track-player 
+      #playerA 
+      class="player-a flex-stretch zzz" 
+      [label]="'Deck A'" 
+      [volume]="100">
+    </app-audio-track-player>
+    <!-- Mixer -->
+    <app-two-channel-mixer 
+      #mixer 
+      class="mixer flex-stretch zzz" 
+      [leftChannelLabel]="'Deck A'"
+      [rightChannelLabel]="'Deck B'" 
+      [leftChannelVolume]="100"
+      [rightChannelVolume]="100" 
+      (leftChannelVolumeChange)="onMixerLeftChannelVolumeChange($event)"
+      (rightChannelVolumeChange)="onMixerRightChannelVolumeChange($event)">
+    </app-two-channel-mixer>
+    <!-- Player B -->
+    <app-audio-track-player 
+      #playerB 
+      class="player-a flex-stretch zzz" 
+      [label]="'Deck B'" 
+      [volume]="100">
+    </app-audio-track-player>
+  </div>
+  <!-- Playlist -->
+  <app-playlist class="playlist flex-stretch zzz" 
+    (loadToDeckA)="onLoadToDeckA($event)"
+    (loadToDeckB)="onLoadToDeckB($event)"></app-playlist>
+</div>
