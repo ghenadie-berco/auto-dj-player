@@ -75,6 +75,7 @@ export class AudioTrackPlayerComponent implements OnInit, AfterViewInit {
       sampleRate: 44100,
       normalize: true,
       minPxPerSec: 100,
+      hideScrollbar: true
     });
     this._waveSurfer.once('ready', () => {
       this.computeSongTime();
