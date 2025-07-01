@@ -1,0 +1,59 @@
+.players-wrapper {
+  height: 30vh;
+  overflow: hidden;
+  transition: 200ms ease-in-out;
+}
+
+.padding {
+  padding: 0.5rem;
+}
+
+button {
+  width: 100px;
+  height: 50px;
+}
+
+.player {
+  height: 100%;
+  border-radius: 1rem;
+  border: 1px solid blue;
+  overflow: hidden;
+  transition: 200ms ease-in-out;
+}
+
+.collapsed {
+  height: 0px;
+}
+
+.fade-in {
+  animation: fade-in-animation 1s ease-in-out infinite;
+}
+
+.fade-out {
+  animation: fade-out-animation 1s ease-in-out infinite;
+}
+
+@keyframes fade-in-animation {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes fade-out-animation {
+  0% {
+    filter: blur(0px);
+  }
+  50% {
+    filter: blur(5px);
+  }
+  100% {
+    filter: blur(0px);
+  }
+}
+

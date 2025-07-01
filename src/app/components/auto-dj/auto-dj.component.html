@@ -1,6 +1,23 @@
-<div class="view flex-column">
-  <div #audioPlayersContainer class="component flex-column flex-gap zzz">
-    Audio Players will be appended here
+<div class="view flex-column padding flex-gap">
+  <div
+    class="component flex-column flex-gap players-wrapper"
+    [ngClass]="playingSongs.length === 0 ? 'collapsed' : ''"
+  >
+    @for(song of playingSongs; track song;) {
+    <app-audio-player
+      class="player"
+      [song]="song"
+      [class.collapsed]="song.isCollapsed"
+    ></app-audio-player>
+    }
   </div>
   <app-playlist class="component flex-column flex-stretch zzz"></app-playlist>
+  <div class="flex-row zzz">
+    @if(playlistState !== 'playing') {
+    <button (click)="onPlay()">Play</button>
+    } @else if(playlistState === 'playing') {
+    <button (click)="onPause()">Pause</button>
+    }
+    <button (click)="onStop()">Stop</button>
+  </div>
 </div>
