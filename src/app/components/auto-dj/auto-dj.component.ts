@@ -63,7 +63,7 @@ export class AutoDjComponent {
       activeSong = queue[currentSongIndex];
       let songDuration = activeSong.duration - this.fadeTime;
       // Add and start playing
-      const playerSong = await this.startPlayingSong(activeSong);
+      this.startPlayingSong(activeSong);
       if (fadingOutSong) {
         // Wait until song is completely faded out
         await this.waitInSeconds(this.fadeTime);
