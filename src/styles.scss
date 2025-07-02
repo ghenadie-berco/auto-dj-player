@@ -1,4 +1,5 @@
 /* You can add global styles to this file, and also import other style files */
+@import "tailwindcss";
 
 html,
 body {
@@ -22,24 +23,6 @@ body {
 
 .component {
   position: relative;
-}
-
-.flex-column {
-  display: flex;
-  flex-direction: column;
-}
-
-.flex-row {
-  display: flex;
-  flex-direction: row;
-}
-
-.flex-stretch {
-  flex: 1 1 auto;
-}
-
-.flex-gap {
-  gap: 1rem;
 }
 
 .zzz {
