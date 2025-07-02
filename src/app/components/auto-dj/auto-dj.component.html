@@ -1,18 +1,12 @@
-<div class="view flex flex-col padding gap-2">
+<div class="view flex flex-col p-2 gap-2">
   <div
-    class="component flex flex-col gap-2 players-wrapper"
-    [ngClass]="playingSongs.length === 0 ? 'collapsed' : ''"
+    class="component flex flex-col gap-2 players-container"
+    [ngClass]="playlistState !== 'playing' ? 'collapsed' : ''"
   >
-    @for(song of playingSongs; track song;) {
-    <app-audio-player
-      class="player"
-      [song]="song"
-      [class.collapsed]="song.isCollapsed"
-    ></app-audio-player>
-    }
+    <div #playersAnchor style="margin-top: -8px"></div>
   </div>
-  <app-playlist class="component flex flex-col flex-auto zzz"></app-playlist>
-  <div class="flex flex-row zzz">
+  <app-playlist class="component flex flex-col flex-auto"></app-playlist>
+  <div class="flex flex-row">
     @if(playlistState !== 'playing') {
     <button (click)="onPlay()">Play</button>
     } @else if(playlistState === 'playing') {

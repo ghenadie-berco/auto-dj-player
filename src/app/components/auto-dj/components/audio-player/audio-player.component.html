@@ -1,2 +1,5 @@
-<p>Playing {{ song().title }}</p>
-<p>Remaining time: {{ remainingTime | songTime }}</p>
+<div #containerRef class="view zzz">
+  @if (song()) {
+  <h2>{{ song()!.title }}</h2>
+  }
+</div>
