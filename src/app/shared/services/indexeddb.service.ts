@@ -13,8 +13,8 @@ interface StoredSong extends Song {
 export class IndexedDbService extends Dexie {
   songs!: Table<StoredSong>;
   
-  public totalCapacityMB: number = 0;
-  public availableSpaceMB: number = 0;
+  public totalCapacity: number = 0;
+  public availableSpace: number = 0;
 
   constructor() {
     super('AutoDJDatabase');
@@ -29,8 +29,8 @@ export class IndexedDbService extends Dexie {
     try {
       if ('storage' in navigator && 'estimate' in navigator.storage) {
         const estimate = await navigator.storage.estimate();
-        this.totalCapacityMB = Math.floor((estimate.quota || 0) / (1024 * 1024));
-        this.availableSpaceMB = Math.floor(((estimate.quota || 0) - (estimate.usage || 0)) / (1024 * 1024));
+        this.totalCapacity = Math.floor((estimate.quota || 0));
+        this.availableSpace = Math.floor(((estimate.quota || 0) - (estimate.usage || 0)));
       }
     } catch (error) {
       console.warn('Storage estimation not available:', error);

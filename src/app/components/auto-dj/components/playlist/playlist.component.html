@@ -22,7 +22,7 @@
       </button>
     </div>
     <div class="text-sm text-gray-600">
-      <p>Storage: {{ indexedDbService.totalCapacityMB }}MB total, {{ indexedDbService.availableSpaceMB }}MB available</p>
+      <p>Storage: {{ indexedDbService.totalCapacity | storageSize }} total, {{ indexedDbService.availableSpace | storageSize }} available</p>
     </div>
   </div>
   

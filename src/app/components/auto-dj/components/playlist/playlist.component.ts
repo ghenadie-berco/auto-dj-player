@@ -9,12 +9,13 @@ import { IndexedDbService } from '../../../../shared/services/indexeddb.service'
 import { Song } from '../../auto-di.interfaces';
 import { NgClass } from '@angular/common';
 import { SongTimePipe } from '../../../../shared/pipes/song-time.pipe';
+import { StorageSizePipe } from '../../../../shared/pipes/storage-size.pipe';
 
 @Component({
   selector: 'app-playlist',
   templateUrl: './playlist.component.html',
   styleUrl: './playlist.component.scss',
-  imports: [NgClass, SongTimePipe],
+  imports: [NgClass, SongTimePipe, StorageSizePipe],
 })
 export class PlaylistComponent implements OnInit {
   public fileInput = viewChild.required('fileInput', {
