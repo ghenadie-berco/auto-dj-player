@@ -24,6 +24,7 @@ export class AudioPlayerComponent implements OnDestroy {
     this.song.set(song);
     this.remainingTime = song.totalTime;
     this.isCollapsed.set(false);
+    this.isLoading.set(true);
     setTimeout(() => {
       this.player = WaveSurfer.create({
         container: this.containerRef?.nativeElement,
@@ -38,6 +39,8 @@ export class AudioPlayerComponent implements OnDestroy {
       if (fadeTime > 0) {
         this.player.setVolume(0);
       }
+      this.isLoading.set(false);
+      // Subscribe to player events
       this.player.on('ready', () => {
         this.player?.play();
         this.fadeIn(fadeTime);
@@ -81,10 +84,10 @@ export class AudioPlayerComponent implements OnDestroy {
     this.player?.zoom(1);
   }
 
-  // TODO: Implement fade out logic as well
   public canStartPlayingNext = new Subject<void>();
   public started = new Subject<void>();
   public finished = new Subject<void>();
+  public isLoading = signal(false);
 
   private isFading = false;
 

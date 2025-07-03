@@ -40,9 +40,10 @@ export class AutoDjComponent {
   }
 
   public onPause(): void {
-    // TODO: Implement
     this.playlistState = 'paused';
-    this.playlistComponent.clearHighlight();
+    this.activePlayerRefs.forEach((player) => {
+      player.instance.pause();
+    });
   }
 
   public onStop(): void {
@@ -103,6 +104,10 @@ export class AutoDjComponent {
     const subscription$ = new Subscription();
     const playerRef = this.playersAnchor.createComponent(AudioPlayerComponent);
     playerRef.instance.playFromBeginning(song, this.fadeTime);
+    // Make players fill available space
+    this.activePlayerRefs.forEach((player) => {
+      player.instance.fillAvaliableSpace();
+    });
     // Subscribe to player events
     subscription$.add(
       playerRef.instance.started.subscribe(() => {
@@ -134,8 +139,10 @@ export class AutoDjComponent {
   }
 
   private resumePlayingQueue(): void {
-    // TODO: Implement
     this.playlistState = 'playing';
+    this.activePlayerRefs.forEach((player) => {
+      player.instance.resume();
+    });
   }
 
   private recreateQueue(): QueueSong[] {
@@ -149,37 +156,4 @@ export class AutoDjComponent {
     });
   }
 
-  // Keep the dummy playlist for fallback/testing
-  private getDummyPlaylist(): Song[] {
-    return [
-      {
-        id: '1',
-        title: 'Song 1',
-        artist: 'Artist 1',
-        src: 'assets/test1.mp3',
-        totalTime: 460,
-      },
-      {
-        id: '2',
-        title: 'Song 2',
-        artist: 'Artist 2',
-        src: 'assets/test2.mp3',
-        totalTime: 454,
-      },
-      {
-        id: '3',
-        title: 'Song 3',
-        artist: 'Artist 3',
-        src: 'assets/test1.mp3',
-        totalTime: 460,
-      },
-      {
-        id: '4',
-        title: 'Song 4',
-        artist: 'Artist 4',
-        src: 'assets/test2.mp3',
-        totalTime: 454,
-      },
-    ];
-  }
 }

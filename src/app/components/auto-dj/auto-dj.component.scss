@@ -9,14 +9,6 @@ button {
   height: 50px;
 }
 
-.player {
-  height: 100%;
-  border-radius: 1rem;
-  border: 1px solid blue;
-  overflow: hidden;
-  transition: 200ms ease-in-out;
-}
-
 .collapsed {
   height: 0px;
 }
