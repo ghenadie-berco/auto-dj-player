@@ -1,4 +1,10 @@
-import { Component, ElementRef, OnInit, ViewChild, signal } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  OnInit,
+  signal,
+  viewChild,
+} from '@angular/core';
 import { IndexedDbService } from '../../../../shared/services/indexeddb.service';
 import { Song } from '../../auto-di.interfaces';
 import { NgClass } from '@angular/common';
@@ -11,8 +17,10 @@ import { SongTimePipe } from '../../../../shared/pipes/song-time.pipe';
   imports: [NgClass, SongTimePipe],
 })
 export class PlaylistComponent implements OnInit {
-  @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
-  
+  public fileInput = viewChild.required('fileInput', {
+    read: ElementRef<HTMLInputElement>,
+  });
+
   public songs: Song[] = [];
   public highlightedSongId: string | null = null;
   public isLoading = signal(false);
@@ -24,10 +32,11 @@ export class PlaylistComponent implements OnInit {
   }
 
   public selectFiles(): void {
-    this.fileInput.nativeElement.click();
+    this.fileInput().nativeElement.click();
   }
 
   public async onFilesSelected(event: Event): Promise<void> {
+    // Upload mp3 files to IndexedDB
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
       this.isLoading.set(true);
@@ -45,6 +54,7 @@ export class PlaylistComponent implements OnInit {
   }
 
   public async clearPlaylist(): Promise<void> {
+    // Sample code to handle clearing the playlist
     if (confirm('Are you sure you want to clear the entire playlist?')) {
       this.isLoading.set(true);
       try {
@@ -61,11 +71,12 @@ export class PlaylistComponent implements OnInit {
   }
 
   public async deleteSong(songId: string, event: Event): Promise<void> {
+    // Sample code to handle song deletion
     event.stopPropagation(); // Prevent song click event
     if (confirm('Are you sure you want to delete this song?')) {
       try {
         await this.indexedDbService.deleteSong(songId);
-        this.songs = this.songs.filter(song => song.id !== songId);
+        this.songs = this.songs.filter((song) => song.id !== songId);
         if (this.highlightedSongId === songId) {
           this.highlightedSongId = null;
         }
@@ -77,11 +88,10 @@ export class PlaylistComponent implements OnInit {
   }
 
   public onSongClick(song: Song): void {
-    // Optional: Handle song click (e.g., play song)
     console.log('Song clicked:', song);
   }
 
-  // PUBLIC API METHODS as requested
+  // [ Public Methods ]
 
   public getPlaylistSongs(): Song[] {
     return this.songs;
@@ -95,7 +105,7 @@ export class PlaylistComponent implements OnInit {
     this.highlightedSongId = null;
   }
 
-  // PRIVATE METHODS
+  // [ Private Methods ]
 
   private async loadPlaylistFromDb(): Promise<void> {
     try {

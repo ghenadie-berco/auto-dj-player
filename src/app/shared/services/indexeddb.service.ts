@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Dexie, Table } from 'dexie';
 import { Song } from '../../components/auto-dj/auto-di.interfaces';
-import * as jsmediatags from 'jsmediatags';
+import { parseBlob } from 'music-metadata-browser';
 
 interface StoredSong extends Song {
   blob: Blob;
@@ -102,20 +102,16 @@ export class IndexedDbService extends Dexie {
   }
 
   private async getAudioMetadata(file: File): Promise<{title?: string, artist?: string}> {
-    return new Promise((resolve) => {
-      jsmediatags.read(file, {
-        onSuccess: (tag) => {
-          const tags = tag.tags;
-          resolve({
-            title: tags.title,
-            artist: tags.artist
-          });
-        },
-        onError: () => {
-          resolve({});
-        }
-      });
-    });
+    try {
+      const metadata = await parseBlob(file);
+      return {
+        title: metadata.common.title,
+        artist: metadata.common.artist
+      };
+    } catch (error) {
+      console.warn('Failed to extract metadata:', error);
+      return {};
+    }
   }
 
   private generateId(): string {
