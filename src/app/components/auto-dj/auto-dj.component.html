@@ -1,7 +1,7 @@
 <div class="view flex flex-col p-2 gap-2">
   <div
     class="component flex flex-col gap-2 players-container"
-    [ngClass]="playlistState !== 'playing' ? 'collapsed' : ''"
+    [ngClass]="activePlayerRefs.length === 0 ? '' : ''"
   >
     <div #playersAnchor style="margin-top: -8px"></div>
   </div>

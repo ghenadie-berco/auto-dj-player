@@ -8,30 +8,32 @@ import {
 import { QueueSong } from '../../auto-di.interfaces';
 import { Subject } from 'rxjs';
 import WaveSurfer from 'wavesurfer.js';
+import { SongTimePipe } from '../../../../shared/pipes/song-time.pipe';
 
 @Component({
   selector: 'app-audio-player',
   templateUrl: './audio-player.component.html',
   styleUrl: './audio-player.component.scss',
   host: { class: 'component flex-auto' },
-  imports: [],
+  imports: [SongTimePipe],
 })
 export class AudioPlayerComponent implements OnDestroy {
   // [ Public API ]
 
   public playFromBeginning(song: QueueSong, fadeTime: number = 0): void {
     this.song.set(song);
-    this.remainingTime = song.duration;
+    this.remainingTime = song.totalTime;
     this.isCollapsed.set(false);
     setTimeout(() => {
       this.player = WaveSurfer.create({
         container: this.containerRef?.nativeElement,
         url: song.src,
-        waveColor: 'violet',
-        progressColor: 'purple',
-        cursorColor: 'violet',
+        waveColor: '#006aff',
+        progressColor: '#1a2883',
+        cursorColor: '#1a2883',
         cursorWidth: 1,
         height: 'auto',
+        // minPxPerSec: 100,
       });
       if (fadeTime > 0) {
         this.player.setVolume(0);
@@ -39,13 +41,27 @@ export class AudioPlayerComponent implements OnDestroy {
       this.player.on('ready', () => {
         this.player?.play();
         this.fadeIn(fadeTime);
-        this.updateRemainingTime();
+        this.started.next();
       });
       this.player.on('finish', () => {
-        this.canStartPlayingNext.next();
+        if (fadeTime === 0) {
+          this.canStartPlayingNext.next();
+        }
         this.finished.next();
       });
-    })
+      this.player.on('timeupdate', () => {
+        // Update remaining time
+        this.remainingTime =
+          this.song()!.totalTime - this.player!.getCurrentTime();
+        // Check if we need to fade out
+        if (fadeTime > 0 && !this.isFading) {
+          if (this.remainingTime <= fadeTime) {
+            this.fadeOut(fadeTime);
+            this.canStartPlayingNext.next();
+          }
+        }
+      });
+    });
   }
 
   public pause(): void {
@@ -61,9 +77,16 @@ export class AudioPlayerComponent implements OnDestroy {
     this.finished.next();
   }
 
+  public fillAvaliableSpace(): void {
+    this.player?.zoom(1);
+  }
+
   // TODO: Implement fade out logic as well
   public canStartPlayingNext = new Subject<void>();
+  public started = new Subject<void>();
   public finished = new Subject<void>();
+
+  private isFading = false;
 
   // [ Internal ]
 
@@ -77,6 +100,10 @@ export class AudioPlayerComponent implements OnDestroy {
     this.player?.stop();
     this.player?.destroy();
     this.player = null;
+    this.isCollapsed.set(false);
+    setTimeout(() => {
+      return;
+    }, 200);
   }
 
   private fadeIn(fadeTime: number): void {
@@ -94,12 +121,19 @@ export class AudioPlayerComponent implements OnDestroy {
     }, (fadeTime * 1000) / 100);
   }
 
-  private updateRemainingTime(): void {
+  private fadeOut(fadeTime: number): void {
+    if (fadeTime === 0) {
+      return;
+    }
+    this.isFading = true;
     const interval = setInterval(() => {
-      this.remainingTime--;
-      if (this.remainingTime === 0) {
+      const currentVolume = this.player?.getVolume() || 0;
+      if (currentVolume <= 0) {
         clearInterval(interval);
+        return;
       }
-    }, 1000);
+      const newVolume = Math.max(currentVolume - 0.01, 0);
+      this.player?.setVolume(newVolume);
+    }, (fadeTime * 1000) / 100);
   }
 }

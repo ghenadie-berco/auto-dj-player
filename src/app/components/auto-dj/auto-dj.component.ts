@@ -15,9 +15,9 @@ export class AutoDjComponent {
   public playlistState: 'playing' | 'paused' | 'stopped' = 'stopped';
   public activePlayerRefs: ComponentRef<AudioPlayerComponent>[] = [];
   public autoDjSettings: AutoDjSettings = {
-    transitionTIme: 30,
+    transitionTIme: 10,
   };
-  private fadeTime = this.autoDjSettings.transitionTIme / 2;
+  private fadeTime = this.autoDjSettings.transitionTIme;
   private queue: QueueSong[] = [];
 
   @ViewChild('playersAnchor', { read: ViewContainerRef })
@@ -84,15 +84,23 @@ export class AutoDjComponent {
     const subscription$ = new Subscription();
     const playerRef = this.playersAnchor.createComponent(AudioPlayerComponent);
     playerRef.instance.playFromBeginning(song, this.fadeTime);
-    this.activePlayerRefs.push(playerRef);
+    // Subscribe to player events
+    subscription$.add(
+      playerRef.instance.started.subscribe(() => {
+        this.activePlayerRefs.push(playerRef);
+      })
+    );
     subscription$.add(
       playerRef.instance.finished.subscribe(() => {
-        console.log('Song finished');
         this.activePlayerRefs = this.activePlayerRefs.filter(
           (p) => p !== playerRef
         );
         playerRef.destroy();
         subscription$.unsubscribe();
+        // Zoom in remaining player
+        this.activePlayerRefs.forEach((player) => {
+          player.instance.fillAvaliableSpace();
+        });
       })
     );
     return new Promise((resolve) => {
@@ -106,12 +114,6 @@ export class AutoDjComponent {
 
   private resumePlayingQueue(): void {
     // TODO: Implement
-  }
-
-  private waitInSeconds(sec: number): Promise<void> {
-    return new Promise((resolve) => {
-      setTimeout(resolve, sec * 1000);
-    });
   }
 
   private recreateQueue(): QueueSong[] {
@@ -132,28 +134,28 @@ export class AutoDjComponent {
         title: 'Song 1',
         artist: 'Artist 1',
         src: 'assets/test1.mp3',
-        duration: 10,
+        totalTime: 460,
       },
       {
         id: '2',
         title: 'Song 2',
         artist: 'Artist 2',
         src: 'assets/test2.mp3',
-        duration: 10,
+        totalTime: 454,
       },
       {
         id: '3',
         title: 'Song 3',
         artist: 'Artist 3',
         src: 'assets/test1.mp3',
-        duration: 10,
+        totalTime: 460,
       },
       {
         id: '4',
         title: 'Song 4',
         artist: 'Artist 4',
         src: 'assets/test2.mp3',
-        duration: 10,
+        totalTime: 454,
       },
     ];
   }

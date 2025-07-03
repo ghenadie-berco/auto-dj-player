@@ -1,5 +1,9 @@
-<div #containerRef class="view zzz">
-  @if (song()) {
-  <h2>{{ song()!.title }}</h2>
-  }
+<div class="view flex flex-col player" [class.collapsed]="isCollapsed()">
+  <div #containerRef class="waveform-container"></div>
+  <!-- Song Details -->
+  <div class="song-details flex-row justify-stretch">
+    <h2>{{ song()!.title }}</h2>
+    <p>{{ song()!.artist }}</p>
+    <p>Time Left: {{ remainingTime | songTime }}</p>
+  </div>
 </div>

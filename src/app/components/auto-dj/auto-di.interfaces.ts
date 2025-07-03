@@ -3,7 +3,7 @@ export interface Song {
   title: string;
   artist: string;
   src: string;
-  duration: number;
+  totalTime: number;
 }
 
 export interface QueueSong extends Song {
