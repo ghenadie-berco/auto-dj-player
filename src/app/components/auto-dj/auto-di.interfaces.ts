@@ -3,7 +3,7 @@ export interface Song {
   title: string;
   artist: string;
   src: string;
-  totalTime: number;
+  totalTime: number; // in seconds
 }
 
 export interface QueueSong extends Song {
@@ -11,5 +11,5 @@ export interface QueueSong extends Song {
 }
 
 export interface AutoDjSettings {
-  transitionTIme: number;
+  transitionTime: number;
 }

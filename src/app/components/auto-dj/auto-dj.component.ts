@@ -4,6 +4,7 @@ import { AudioPlayerComponent } from './components/audio-player/audio-player.com
 import { AutoDjSettings, QueueSong, Song } from './auto-di.interfaces';
 import { NgClass } from '@angular/common';
 import { Subscription } from 'rxjs';
+import { IndexedDbService } from '../../shared/services/indexeddb.service';
 
 @Component({
   selector: 'app-auto-dj',
@@ -15,13 +16,18 @@ export class AutoDjComponent {
   public playlistState: 'playing' | 'paused' | 'stopped' = 'stopped';
   public activePlayerRefs: ComponentRef<AudioPlayerComponent>[] = [];
   public autoDjSettings: AutoDjSettings = {
-    transitionTIme: 10,
+    transitionTime: 10,
   };
-  private fadeTime = this.autoDjSettings.transitionTIme;
+  private fadeTime = this.autoDjSettings.transitionTime;
   private queue: QueueSong[] = [];
 
   @ViewChild('playersAnchor', { read: ViewContainerRef })
   private playersAnchor: ViewContainerRef | undefined;
+
+  @ViewChild(PlaylistComponent)
+  private playlistComponent!: PlaylistComponent;
+
+  constructor(private indexedDbService: IndexedDbService) {}
 
   public onPlay(): void {
     // If player was stopped, start from beginning
@@ -36,6 +42,7 @@ export class AutoDjComponent {
   public onPause(): void {
     // TODO: Implement
     this.playlistState = 'paused';
+    this.playlistComponent.clearHighlight();
   }
 
   public onStop(): void {
@@ -43,6 +50,7 @@ export class AutoDjComponent {
     this.activePlayerRefs.forEach((player) => {
       player.instance.stop();
     });
+    this.playlistComponent.clearHighlight();
   }
 
   // [ Private Functions ]
@@ -68,11 +76,22 @@ export class AutoDjComponent {
 
   private async playQueueUntilFinished(queue: QueueSong[]): Promise<void> {
     for (const song of queue) {
+      // Highlight current song in playlist
+      this.playlistComponent.highlightPlayingSong(song.id);
+      
+      // Update song src with blob URL for playback
+      const blob = await this.indexedDbService.getBlobBySongId(song.id);
+      if (blob) {
+        song.src = URL.createObjectURL(blob);
+      }
+      
       const { canStartNextSong } = await this.playSongInNewPlayer(song);
       if (!canStartNextSong) {
         break;
       }
     }
+    // Clear highlight when queue finishes
+    this.playlistComponent.clearHighlight();
   }
 
   private playSongInNewPlayer(
@@ -101,6 +120,8 @@ export class AutoDjComponent {
         this.activePlayerRefs.forEach((player) => {
           player.instance.fillAvaliableSpace();
         });
+        // Revoke blob URL to free memory
+        URL.revokeObjectURL(song.src);
       })
     );
     return new Promise((resolve) => {
@@ -114,11 +135,12 @@ export class AutoDjComponent {
 
   private resumePlayingQueue(): void {
     // TODO: Implement
+    this.playlistState = 'playing';
   }
 
   private recreateQueue(): QueueSong[] {
     // TODO: implement shuffle check
-    const playlist = this.getDummyPlaylist();
+    const playlist = this.playlistComponent.getPlaylistSongs();
     return playlist.map((song, index) => {
       return {
         ...song,
@@ -127,6 +149,7 @@ export class AutoDjComponent {
     });
   }
 
+  // Keep the dummy playlist for fallback/testing
   private getDummyPlaylist(): Song[] {
     return [
       {
