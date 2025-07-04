@@ -2,7 +2,21 @@
   min-height: 132px;
   height: 264px;
   overflow: hidden;
-  transition: 200ms ease-in-out;
+  transition: all 200ms ease-in-out;
+}
+
+.collapsed {
+  height: 0px;
+  min-height: 0px;
+}
+
+.playlist {
+  max-height: calc(100vh - 100px);
+  overflow: hidden;
+}
+
+.actions {
+  margin-top: auto;
 }
 
 button {
@@ -24,10 +38,6 @@ button {
     background: #f3f4f6;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
-}
-
-.collapsed {
-  height: 0px;
 }
 
 .fade-in {

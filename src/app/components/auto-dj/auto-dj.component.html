@@ -6,8 +6,8 @@
   >
     <div #playersAnchor style="margin-top: -8px"></div>
   </div>
-  <app-playlist class="component flex flex-col"></app-playlist>
-  <div class="flex flex-row">
+  <app-playlist class="component flex flex-col playlist"></app-playlist>
+  <div class="flex flex-row actions">
     @if(playlistState !== 'playing') {
     <button (click)="onPlay()">Play</button>
     } @else if(playlistState === 'playing') {
