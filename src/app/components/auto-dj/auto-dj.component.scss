@@ -1,5 +1,6 @@
 .players-container {
-  height: 300px;
+  min-height: 132px;
+  height: 264px;
   overflow: hidden;
   transition: 200ms ease-in-out;
 }
@@ -60,4 +61,3 @@ button {
     filter: blur(0px);
   }
 }
-
