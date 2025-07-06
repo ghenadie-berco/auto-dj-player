@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Dexie, Table } from 'dexie';
-import { Song } from '../../components/auto-dj/auto-di.interfaces';
+import { Song } from '../../components (v0.0.1)/auto-dj/auto-di.interfaces';
 import { parseBlob } from 'music-metadata-browser';
 import { BehaviorSubject } from 'rxjs';
 
