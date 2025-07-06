@@ -25,11 +25,22 @@ export class PlaylistComponent implements OnInit {
   public songs: Song[] = [];
   public highlightedSongId: string | null = null;
   public isLoading = signal(false);
+  public isLoadingDefaultSongs = signal(false);
 
   constructor(public indexedDbService: IndexedDbService) {}
 
   async ngOnInit(): Promise<void> {
-    await this.loadPlaylistFromDb();
+    this.isLoadingDefaultSongs.set(true);
+    try {
+      // First load any default songs from playlist.json that aren't already in the database
+      await this.indexedDbService.loadDefaultSongsFromPlaylist();
+      // Then load all songs from the database
+      await this.loadPlaylistFromDb();
+    } catch (error) {
+      console.error('Error during initialization:', error);
+    } finally {
+      this.isLoadingDefaultSongs.set(false);
+    }
   }
 
   public selectFiles(): void {

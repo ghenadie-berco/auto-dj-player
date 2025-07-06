@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Dexie, Table } from 'dexie';
 import { Song } from '../../components/auto-dj/auto-di.interfaces';
 import { parseBlob } from 'music-metadata-browser';
+import { BehaviorSubject } from 'rxjs';
 
 interface StoredSong extends Song {
   blob: Blob;
@@ -15,6 +16,11 @@ export class IndexedDbService extends Dexie {
   
   public totalCapacity: number = 0;
   public availableSpace: number = 0;
+  public loadingProgress$ = new BehaviorSubject<{current: number, total: number, message: string}>({
+    current: 0,
+    total: 0,
+    message: ''
+  });
 
   constructor() {
     super('AutoDJDatabase');
@@ -38,7 +44,10 @@ export class IndexedDbService extends Dexie {
   }
 
   public async loadFilesToIndexedDB(files: FileList): Promise<void> {
-    const promises = Array.from(files).map(async (file) => {
+    const totalFiles = files.length;
+    this.loadingProgress$.next({ current: 0, total: totalFiles, message: 'Starting to load files...' });
+
+    const promises = Array.from(files).map(async (file, index) => {
       if (file.type === 'audio/mpeg' || file.type === 'audio/mp3') {
         const [duration, metadata] = await Promise.all([
           this.getAudioDuration(file),
@@ -55,11 +64,87 @@ export class IndexedDbService extends Dexie {
         };
         
         await this.songs.add(song);
+        this.loadingProgress$.next({ current: index + 1, total: totalFiles, message: `Loaded ${metadata.title}` });
       }
     });
     
     await Promise.all(promises);
     await this.updateStorageInfo();
+    this.loadingProgress$.next({ current: totalFiles, total: totalFiles, message: 'All files loaded.' });
+  }
+
+  public async loadDefaultSongsFromPlaylist(): Promise<void> {
+    try {
+      // Fetch the playlist.json file
+      const response = await fetch('/playlist.json');
+      if (!response.ok) {
+        console.warn('Could not load playlist.json:', response.statusText);
+        return;
+      }
+      
+      const playlistData = await response.json();
+      const songUrls: string[] = playlistData.songs || [];
+      
+      this.loadingProgress$.next({ current: 0, total: songUrls.length, message: 'Loading default songs from playlist...' });
+      
+      // Process each song URL
+      const promises = songUrls.map(async (songUrl, index) => {
+        try {
+          // Extract filename from URL for checking
+          const filename = songUrl.split('/').pop() || '';
+          const titleFromFilename = filename.replace(/\.[^/.]+$/, "");
+          
+          // Fetch the audio file first to get proper metadata
+          const audioResponse = await fetch(songUrl);
+          if (!audioResponse.ok) {
+            console.warn(`Could not fetch ${songUrl}:`, audioResponse.statusText);
+            return;
+          }
+          
+          const blob = await audioResponse.blob();
+          const file = new File([blob], filename, { type: 'audio/mpeg' });
+          
+          // Get metadata first to check for duplicates properly
+          const metadata = await this.getAudioMetadata(file);
+          const finalTitle = metadata.title || titleFromFilename;
+          const finalArtist = metadata.artist || 'Unknown Artist';
+          
+          // Check if this song already exists in IndexedDB using title and artist
+          const songExists = await this.songExistsByTitleAndArtist(finalTitle, finalArtist);
+          if (songExists) {
+            console.log(`Song "${finalTitle}" by "${finalArtist}" already exists in database, skipping...`);
+            this.loadingProgress$.next({ current: index + 1, total: songUrls.length, message: `Skipped ${finalTitle}` });
+            return;
+          }
+          
+          // Get duration
+          const duration = await this.getAudioDuration(file);
+          
+          const song: StoredSong = {
+            id: this.generateId(),
+            title: finalTitle,
+            artist: finalArtist,
+            src: URL.createObjectURL(file),
+            totalTime: duration,
+            blob: file
+          };
+          
+          await this.songs.add(song);
+          console.log(`Added default song: ${song.title} by ${song.artist}`);
+          this.loadingProgress$.next({ current: index + 1, total: songUrls.length, message: `Added ${song.title}` });
+          
+        } catch (error) {
+          console.error(`Error processing song ${songUrl}:`, error);
+        }
+      });
+      
+      await Promise.all(promises);
+      await this.updateStorageInfo();
+      this.loadingProgress$.next({ current: songUrls.length, total: songUrls.length, message: 'All default songs loaded.' });
+      
+    } catch (error) {
+      console.error('Error loading default songs from playlist:', error);
+    }
   }
 
   public async getPlaylistSongs(): Promise<Song[]> {
@@ -86,6 +171,14 @@ export class IndexedDbService extends Dexie {
   public async clearAllSongs(): Promise<void> {
     await this.songs.clear();
     await this.updateStorageInfo();
+  }
+
+  public async songExistsByTitleAndArtist(title: string, artist: string): Promise<boolean> {
+    const existingSong = await this.songs
+      .where('title').equals(title)
+      .and(song => song.artist === artist)
+      .first();
+    return !!existingSong;
   }
 
   private async getAudioDuration(file: File): Promise<number> {

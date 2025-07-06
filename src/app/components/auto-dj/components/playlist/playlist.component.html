@@ -5,9 +5,9 @@
       <button 
         (click)="selectFiles()" 
         class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors"
-        [disabled]="isLoading()"
+        [disabled]="isLoading() || isLoadingDefaultSongs()"
       >
-        @if (isLoading()) {
+        @if (isLoading() || isLoadingDefaultSongs()) {
           <span>Loading...</span>
         } @else {
           <span>Add MP3 Files</span>
@@ -16,7 +16,7 @@
       <button 
         (click)="clearPlaylist()" 
         class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition-colors"
-        [disabled]="songs.length === 0 || isLoading()"
+        [disabled]="songs.length === 0 || isLoading() || isLoadingDefaultSongs()"
       >
         Clear Playlist
       </button>
@@ -27,7 +27,12 @@
   </div>
   
   <div class="playlist-content">
-    @if (isLoading()) {
+    @if (isLoadingDefaultSongs()) {
+      <div class="text-center text-gray-500 py-8">
+        <div class="loading-spinner"></div>
+        <p>Loading default songs from assets...</p>
+      </div>
+    } @else if (isLoading()) {
       <div class="text-center text-gray-500 py-8">
         <div class="loading-spinner"></div>
         <p>Loading songs...</p>
