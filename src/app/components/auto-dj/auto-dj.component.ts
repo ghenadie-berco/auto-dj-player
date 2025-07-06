@@ -16,7 +16,7 @@ export class AutoDjComponent {
   public playlistState: 'playing' | 'paused' | 'stopped' = 'stopped';
   public activePlayerRefs: ComponentRef<AudioPlayerComponent>[] = [];
   public autoDjSettings: AutoDjSettings = {
-    transitionTime: 10,
+    transitionTime: 9,
   };
   private fadeTime = this.autoDjSettings.transitionTime;
   private queue: QueueSong[] = [];
