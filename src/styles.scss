@@ -1,9 +1,9 @@
 /* Variables */
 
 :root {
-  --primary-color: #5451F5;
+  --primary-color: #5451f5;
   --text-color: #ffffff;
-  --bg: linear-gradient(to bottom, #3F4C81, #001041);
+  --bg: linear-gradient(to bottom, #3f4c81, #001041);
   --border-color: rgba(255, 255, 255, 0.5);
 }
 
@@ -14,7 +14,8 @@ body {
   height: 100%;
   margin: 0;
   padding: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-family: "Rubik", sans-serif;
+  font-optical-sizing: auto;
   color: var(--text-color);
 }
 
