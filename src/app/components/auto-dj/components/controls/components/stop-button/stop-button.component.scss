@@ -1,0 +1,32 @@
+button {
+  background: none;
+  border: none;
+  box-shadow: none;
+  padding: .5rem;
+
+  &:hover:not(:disabled) {
+    svg {
+      fill: var(--primary-color);
+      cursor: pointer;
+    }
+  }
+
+  &:active:not(:disabled) {
+    svg {
+      fill: var(--emphasis-color);
+    }
+  }
+}
+
+button:disabled {
+  opacity: 0.5;
+
+}
+
+svg {
+  width: 2em;
+  height: 2em;
+  vertical-align: -0.125em;
+  fill: var(--text-color);
+  transition: fill 50ms ease-in;
+}

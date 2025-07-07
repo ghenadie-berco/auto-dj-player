@@ -1,0 +1,1 @@
+export type PlaylistState = 'playing' | 'paused' | 'stopped';

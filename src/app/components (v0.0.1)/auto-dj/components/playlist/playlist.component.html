@@ -1,0 +1,86 @@
+<div class="playlist-container p-4">
+  <div class="playlist-header mb-4">
+    <h2 class="text-xl font-bold mb-2">Playlist</h2>
+    <div class="flex gap-2 mb-2">
+      <button 
+        (click)="selectFiles()" 
+        class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors"
+        [disabled]="isLoading() || isLoadingDefaultSongs()"
+      >
+        @if (isLoading() || isLoadingDefaultSongs()) {
+          <span>Loading...</span>
+        } @else {
+          <span>Add MP3 Files</span>
+        }
+      </button>
+      <button 
+        (click)="clearPlaylist()" 
+        class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition-colors"
+        [disabled]="songs.length === 0 || isLoading() || isLoadingDefaultSongs()"
+      >
+        Clear Playlist
+      </button>
+    </div>
+    <div class="text-sm text-gray-600">
+      <p>Storage: {{ indexedDbService.totalCapacity | storageSize }} total, {{ indexedDbService.availableSpace | storageSize }} available</p>
+    </div>
+  </div>
+  
+  <div class="playlist-content">
+    @if (isLoadingDefaultSongs()) {
+      <div class="text-center text-gray-500 py-8">
+        <div class="loading-spinner"></div>
+        <p>Loading music...</p>
+      </div>
+    } @else if (isLoading()) {
+      <div class="text-center text-gray-500 py-8">
+        <div class="loading-spinner"></div>
+        <p>Loading songs...</p>
+      </div>
+    } @else if (songs.length === 0) {
+      <div class="text-center text-gray-500 py-8">
+        <p>No songs in playlist</p>
+        <p class="text-sm">Click "Add MP3 Files" to get started</p>
+      </div>
+    } @else {
+      <div class="song-list">
+        @for (song of songs; track song.id) {
+          <div 
+            class="song-item p-3 mb-2 border rounded-lg cursor-pointer transition-colors"
+            [ngClass]="{
+              'bg-blue-100 border-blue-300': highlightedSongId === song.id,
+              'bg-gray-50 hover:bg-gray-100': highlightedSongId !== song.id
+            }"
+            (click)="onSongClick(song)"
+          >
+            <div class="flex justify-between items-center">
+              <div class="song-info">
+                <h3 class="font-medium text-gray-900">{{ song.title }}</h3>
+                <p class="text-sm text-gray-600">{{ song.artist }}</p>
+              </div>
+              <div class="song-meta flex items-center gap-4">
+                <span class="text-sm text-gray-500">{{ song.totalTime | songTime }}</span>
+                <button 
+                  (click)="deleteSong(song.id, $event)"
+                  class="text-red-500 hover:text-red-700 transition-colors"
+                  title="Delete song"
+                >
+                  ×
+                </button>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </div>
+  
+  <input 
+    #fileInput 
+    type="file" 
+    accept="audio/mp3,audio/mpeg" 
+    multiple 
+    (change)="onFilesSelected($event)"
+    class="hidden"
+  >
+</div>

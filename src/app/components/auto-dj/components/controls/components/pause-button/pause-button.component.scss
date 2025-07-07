@@ -1,0 +1,27 @@
+button {
+  background: none;
+  border: none;
+  box-shadow: none;
+  padding: .5rem;
+
+  &:hover {
+    svg {
+      fill: var(--primary-color);
+      cursor: pointer;
+    }
+  }
+
+  &:active {
+    svg {
+      fill: var(--emphasis-color);
+    }
+  }
+}
+
+svg {
+  width: 2em;
+  height: 2em;
+  vertical-align: -0.125em;
+  fill: var(--text-color);
+  transition: fill 50ms ease-in;
+}

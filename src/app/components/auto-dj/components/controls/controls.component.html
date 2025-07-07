@@ -1,0 +1,7 @@
+@if (playlistState() !== 'playing') {
+  <app-play-button (play)="onPlay()"></app-play-button>
+}
+@if (playlistState() === 'playing') {
+  <app-pause-button (pause)="onPause()"></app-pause-button>
+}
+<app-stop-button [disabled]="playlistState() === 'stopped'" (stop)="onStop()"></app-stop-button>

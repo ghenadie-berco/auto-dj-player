@@ -1,73 +1,7 @@
-.players-container {
-  min-height: 132px;
-  height: 264px;
-  overflow: hidden;
-  transition: all 200ms ease-in-out;
+.padding {
+  padding: .5rem;
 }
 
-.collapsed {
-  height: 0px;
-  min-height: 0px;
-}
-
-.playlist {
-  max-height: calc(100vh - 100px);
-  overflow: hidden;
-}
-
-.actions {
-  margin-top: auto;
-}
-
-button {
-  width: 100px;
-  height: 50px;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  background: #f9fafb;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  font-size: 1rem;
-  font-weight: 500;
-  color: #374151;
-  margin: 0.5rem 0.25rem;
-  padding: 0.5rem 1rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-
-  &:hover {
-    background: #f3f4f6;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
-}
-
-.fade-in {
-  animation: fade-in-animation 1s ease-in-out infinite;
-}
-
-.fade-out {
-  animation: fade-out-animation 1s ease-in-out infinite;
-}
-
-@keyframes fade-in-animation {
-  0% {
-    opacity: 0;
-  }
-  50% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-  }
-}
-
-@keyframes fade-out-animation {
-  0% {
-    filter: blur(0px);
-  }
-  50% {
-    filter: blur(5px);
-  }
-  100% {
-    filter: blur(0px);
-  }
+.gap {
+  gap: .5rem;
 }

@@ -1,130 +1,54 @@
-import {
-  Component,
-  ElementRef,
-  OnInit,
-  signal,
-  viewChild,
-} from '@angular/core';
-import { IndexedDbService } from '../../../../shared/services/indexeddb.service';
-import { Song } from '../../auto-di.interfaces';
-import { NgClass } from '@angular/common';
+// Angular
+import { Component, inject, OnInit, signal } from '@angular/core';
+// Services
+import { PlaylistService } from './playlist.service';
+// Pipes
 import { SongTimePipe } from '../../../../shared/pipes/song-time.pipe';
-import { StorageSizePipe } from '../../../../shared/pipes/storage-size.pipe';
+// Interfaces
+import { PlaylistSong } from './playlist.interfaces';
 
 @Component({
   selector: 'app-playlist',
   templateUrl: './playlist.component.html',
   styleUrl: './playlist.component.scss',
-  imports: [NgClass, SongTimePipe, StorageSizePipe],
+  providers: [PlaylistService],
+  imports: [SongTimePipe],
 })
 export class PlaylistComponent implements OnInit {
-  public fileInput = viewChild.required('fileInput', {
-    read: ElementRef<HTMLInputElement>,
-  });
 
-  public songs: Song[] = [];
-  public highlightedSongId: string | null = null;
-  public isLoading = signal(false);
-  public isLoadingDefaultSongs = signal(false);
+  // [ Public ]
 
-  constructor(public indexedDbService: IndexedDbService) {}
-
-  async ngOnInit(): Promise<void> {
-    this.isLoadingDefaultSongs.set(true);
-    try {
-      // First load any default songs from playlist.json that aren't already in the database
-      await this.indexedDbService.loadDefaultSongsFromPlaylist();
-      // Then load all songs from the database
-      await this.loadPlaylistFromDb();
-    } catch (error) {
-      console.error('Error during initialization:', error);
-    } finally {
-      this.isLoadingDefaultSongs.set(false);
-    }
+  public getPlaylist(): PlaylistSong[] {
+    return this.playlist();
   }
 
-  public selectFiles(): void {
-    this.fileInput().nativeElement.click();
+  public setActiveSongId(songId: string): void {
+    this.activeSongId.set(songId);
   }
 
-  public async onFilesSelected(event: Event): Promise<void> {
-    // Upload mp3 files to IndexedDB
-    const input = event.target as HTMLInputElement;
-    if (input.files && input.files.length > 0) {
-      this.isLoading.set(true);
-      try {
-        await this.indexedDbService.loadFilesToIndexedDB(input.files);
-        await this.loadPlaylistFromDb();
-        input.value = ''; // Clear the input
-      } catch (error) {
-        console.error('Error loading files:', error);
-        alert('Error loading files. Please try again.');
-      } finally {
-        this.isLoading.set(false);
-      }
-    }
+  // [ Internal ]
+
+  // Deps
+
+  private _service = inject(PlaylistService);
+
+  // Vars
+
+  public isLoading = signal<boolean>(false);
+  public playlist = signal<PlaylistSong[]>([]);
+  public activeSongId = signal<string>('');
+
+  public ngOnInit(): void {
+    void this.loadPlaylist();
   }
 
-  public async clearPlaylist(): Promise<void> {
-    // Sample code to handle clearing the playlist
-    if (confirm('Are you sure you want to clear the entire playlist?')) {
-      this.isLoading.set(true);
-      try {
-        await this.indexedDbService.clearAllSongs();
-        this.songs = [];
-        this.highlightedSongId = null;
-      } catch (error) {
-        console.error('Error clearing playlist:', error);
-        alert('Error clearing playlist. Please try again.');
-      } finally {
-        this.isLoading.set(false);
-      }
-    }
+  private async loadPlaylist(): Promise<void> {
+    this.isLoading.set(true);
+    const defaultSongs = await this._service.getAppDefaultSongs();
+    this.isLoading.set(false);
+    this.playlist.set([
+      ...defaultSongs
+    ]);
   }
 
-  public async deleteSong(songId: string, event: Event): Promise<void> {
-    // Sample code to handle song deletion
-    event.stopPropagation(); // Prevent song click event
-    if (confirm('Are you sure you want to delete this song?')) {
-      try {
-        await this.indexedDbService.deleteSong(songId);
-        this.songs = this.songs.filter((song) => song.id !== songId);
-        if (this.highlightedSongId === songId) {
-          this.highlightedSongId = null;
-        }
-      } catch (error) {
-        console.error('Error deleting song:', error);
-        alert('Error deleting song. Please try again.');
-      }
-    }
-  }
-
-  public onSongClick(song: Song): void {
-    console.log('Song clicked:', song);
-  }
-
-  // [ Public Methods ]
-
-  public getPlaylistSongs(): Song[] {
-    return this.songs;
-  }
-
-  public highlightPlayingSong(songId: string): void {
-    this.highlightedSongId = songId;
-  }
-
-  public clearHighlight(): void {
-    this.highlightedSongId = null;
-  }
-
-  // [ Private Methods ]
-
-  private async loadPlaylistFromDb(): Promise<void> {
-    try {
-      this.songs = await this.indexedDbService.getPlaylistSongs();
-    } catch (error) {
-      console.error('Error loading playlist from database:', error);
-      this.songs = [];
-    }
-  }
 }

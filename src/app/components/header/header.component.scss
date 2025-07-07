@@ -1,0 +1,17 @@
+:host {
+  background: var(--header-bg);
+  border-bottom: 1px solid var(--border-color);
+  text-align: center;
+  padding: 0.5rem 1rem;
+}
+
+h1 {
+  font-size: 2rem;
+  font-weight: 500;
+  margin: 0;
+  font-style: italic;
+}
+
+p {
+  margin: 0;
+}

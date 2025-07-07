@@ -1,0 +1,19 @@
+<div class="view flex flex-col p-2 gap-2">
+  <h1 class="font-bold text-2xl text-center">Auto DJ</h1>
+  <div
+    class="component flex flex-col gap-2 players-container"
+    [ngClass]="playlistState === 'stopped' ? 'collapsed' : ''"
+  >
+    <div #playersAnchor style="margin-top: -8px"></div>
+  </div>
+  <app-playlist class="component flex flex-col playlist"></app-playlist>
+  <div class="flex flex-row actions">
+    @if(playlistState !== 'playing') {
+    <button (click)="onPlay()">Play</button>
+    } @else if(playlistState === 'playing') {
+    <button (click)="onPause()">Pause</button>
+    }
+    <button (click)="onStop()">Stop</button>
+  </div>
+  <h2 class="font-bold text-sm text-center">V0.0.1 - Beta</h2>
+</div>

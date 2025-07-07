@@ -1,9 +1,10 @@
 <div class="view flex flex-col player" [class.collapsed]="isCollapsed()">
   <div #containerRef class="waveform-container"></div>
   <!-- Song Details -->
-  <div class="song-details flex-row justify-stretch">
+  <div class="song-details flex-column justify-stretch">
     <h2>{{ song()!.title }}</h2>
     <p>{{ song()!.artist }}</p>
+    <p>Total Time: {{ song()!.totalTime | songTime }}</p>
     <p>Time Left: {{ remainingTime | songTime }}</p>
     @if(isLoading()) {
       <div class="loading-spinner"></div>
