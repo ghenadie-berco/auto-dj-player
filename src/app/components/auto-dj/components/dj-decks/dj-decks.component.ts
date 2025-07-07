@@ -1,5 +1,8 @@
+// Angular
 import { Component, output, viewChild } from '@angular/core';
+// Components
 import { AudioPlayerComponent } from './components/audio-player/audio-player.component';
+// Interfaces
 import { PlaylistSong } from '../playlist/playlist.interfaces';
 
 @Component({

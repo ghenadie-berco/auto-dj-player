@@ -4,5 +4,4 @@ export interface PlaylistSong {
   artist: string;
   src: string;
   duration: number;
-  isDefault?: boolean;
 }

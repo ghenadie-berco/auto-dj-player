@@ -1,3 +1,4 @@
+// Angular
 import {
   AfterViewInit,
   Component,
@@ -6,8 +7,11 @@ import {
   signal,
   viewChild,
 } from '@angular/core';
-import { PlaylistSong } from '../../../playlist/playlist.interfaces';
+// Wavesurfer JS
 import WaveSurfer from 'wavesurfer.js';
+// Interfaces
+import { PlaylistSong } from '../../../playlist/playlist.interfaces';
+// Pipes
 import { SongTimePipe } from '../../../../../../shared/pipes/song-time.pipe';
 
 @Component({

@@ -45,11 +45,9 @@ export class PlaylistComponent implements OnInit {
   private async loadPlaylist(): Promise<void> {
     this.isLoading.set(true);
     const defaultSongs = await this._service.getAppDefaultSongs();
-    const userSongs = await this._service.getUserSongs();
     this.isLoading.set(false);
     this.playlist.set([
-      ...defaultSongs,
-      ...userSongs
+      ...defaultSongs
     ]);
   }
 
