@@ -26,10 +26,13 @@ export class AudioPlayerComponent implements AfterViewInit {
 
   public isAvailable = computed(() => !this.song());
 
-  public async play(song: PlaylistSong): Promise<void> {
+  public async play(
+    song: PlaylistSong,
+    transitionTime: number = 0
+  ): Promise<void> {
     this.song.set(song);
     this.player?.load(song.src);
-    await this.playSongUntil(song.duration);
+    await this.playSongUntil(song.duration - transitionTime, transitionTime);
   }
 
   public pause(): void {
@@ -62,6 +65,7 @@ export class AudioPlayerComponent implements AfterViewInit {
     'waveSurferContainer'
   );
   private player: WaveSurfer | undefined;
+  private isFadingOut = false;
 
   // Lifecycle Hooks
 
@@ -89,17 +93,62 @@ export class AudioPlayerComponent implements AfterViewInit {
     });
   }
 
-  private async playSongUntil(endTime: number): Promise<void> {
+  private async playSongUntil(
+    endTime: number,
+    transitionTime: number = 0
+  ): Promise<void> {
     return new Promise((resolve) => {
       this.player?.on('timeupdate', (currentTime: number) => {
         // Update remaining time
         this.remainingTime.set(this.song()!.duration - currentTime);
         // Check if time to resolve
         if (currentTime >= endTime) {
+          // Check if fade out is needed
+          if (transitionTime > 0 && !this.isFadingOut) {
+            this.isFadingOut = true;
+            this.fadeOutVolume(transitionTime);
+          }
           resolve();
         }
       });
+      // Play
       this.player?.play();
+      // Fade it if needed
+      if (transitionTime > 0) {
+        this.fadeInVolume(transitionTime);
+      }
     });
+  }
+
+  private fadeInVolume(fadeTime: number): void {
+    if (fadeTime === 0) {
+      return;
+    }
+    this.player?.setVolume(0);
+    const interval = setInterval(() => {
+      const currentVolume = this.player?.getVolume() || 0;
+      if (currentVolume >= 1) {
+        clearInterval(interval);
+        return;
+      }
+      const newVolume = parseFloat(Math.min(currentVolume + 0.01, 1).toFixed(2));
+      this.player?.setVolume(newVolume);
+    }, (fadeTime * 1000) / 100);
+  }
+
+  private fadeOutVolume(fadeTime: number): void {
+    if (fadeTime === 0) {
+      return;
+    }
+    const interval = setInterval(() => {
+      const currentVolume = this.player?.getVolume() || 0;
+      if (currentVolume <= 0) {
+        clearInterval(interval);
+        this.isFadingOut = false;
+        return;
+      }
+      const newVolume = parseFloat(Math.max(currentVolume - 0.01, 0).toFixed(2));
+      this.player?.setVolume(newVolume);
+    }, (fadeTime * 1000) / 100);
   }
 }

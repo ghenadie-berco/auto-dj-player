@@ -36,7 +36,7 @@ export class AutoDjComponent {
     // Get queue
     const queue = this.playlistRef()!.getPlaylist();
     // Begin playing the playlist
-    this.djDecksRef()!.play(queue);
+    this.djDecksRef()!.play(queue, 10);
     // Set playlist state
     this.playlistState.set('playing');
   }
