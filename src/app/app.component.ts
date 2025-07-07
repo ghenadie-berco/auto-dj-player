@@ -1,4 +1,6 @@
+// Angular
 import { Component } from '@angular/core';
+// Components
 import { HeaderComponent } from './components/header/header.component';
 import { AutoDjComponent } from './components/auto-dj/auto-dj.component';
 import { FooterComponent } from './components/footer/footer.component';
