@@ -1,7 +1,15 @@
-@if(song) {
-
-} @else {
-  <div class="flex-row flex-centered flex-auto">
-    No song has been loaded
+<div #waveSurferContainer class="view"></div>
+@if(song()) {
+<!-- Song Details -->
+<div class="song-details flex-row">
+  <div class="flex-auto align-left">
+    <div>{{ song()!.title }}</div>
+    <div>{{ song()!.artist }}</div>
   </div>
+  <div class="align-right">
+    <div>{{ remainingTime() == null ? '' : '-' + (remainingTime()! | songTime) }}</div>
+  </div>
+</div>
+} @else {
+<div class="view flex-row flex-centered flex-auto">No song has been loaded</div>
 }

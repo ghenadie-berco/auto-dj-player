@@ -1,7 +1,7 @@
 <!-- Extra Padding -->
 <div class="flex-auto flex-col gap padding">
   <!-- DJ Decks -->
-  <app-dj-decks class="component"></app-dj-decks>
+  <app-dj-decks class="component" (activeSongChange)="onActiveSongChange($event)"></app-dj-decks>
   <!-- Playlist -->
   <app-playlist class="flex-auto component"></app-playlist>
 </div>

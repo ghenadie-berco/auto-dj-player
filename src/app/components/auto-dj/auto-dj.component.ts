@@ -36,14 +36,24 @@ export class AutoDjComponent {
     // Get queue
     const queue = this.playlistRef()!.getPlaylist();
     // Begin playing the playlist
-    this.djDecksRef()!.playQueue(queue);
+    this.djDecksRef()!.play(queue);
+    // Set playlist state
+    this.playlistState.set('playing');
   }
 
   public onPause(): void {
-    // TODO: implement
+    this.djDecksRef()!.pause();
+    this.playlistState.set('paused');
   }
 
   public onStop(): void {
-    // TODO: implement
+    this.djDecksRef()!.stop();
+    this.djDecksRef()!.clear();
+    this.playlistState.set('stopped');
+    this.playlistRef()!.setActiveSongId('');
+  }
+
+  public onActiveSongChange(e: { songId: string }): void {
+    this.playlistRef()!.setActiveSongId(e.songId);
   }
 }
