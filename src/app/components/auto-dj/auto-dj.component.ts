@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
-import { PlaybackComponent } from './components/playback/playback.component';
 import { PlaylistComponent } from './components/playlist/playlist.component';
 import { ControlsComponent } from './components/controls/controls.component';
+import { DjDecksComponent } from './components/dj-decks/dj-decks.component';
 
 @Component({
   selector: 'app-auto-dj',
@@ -9,7 +9,7 @@ import { ControlsComponent } from './components/controls/controls.component';
   styleUrl: './auto-dj.component.scss',
   host: { class: 'component flex-col' },
   imports: [
-    PlaybackComponent,
+    DjDecksComponent,
     PlaylistComponent,
     ControlsComponent,
   ],

@@ -1,1 +1,7 @@
-<p>controls works!</p>
+@if (playState !== 'playing') {
+  <app-play-button (play)="onPlay()"></app-play-button>
+}
+@if (playState === 'playing') {
+  <app-pause-button (pause)="onPause()"></app-pause-button>
+}
+<app-stop-button (stop)="onStop()"></app-stop-button>
