@@ -6,4 +6,10 @@
   <app-playlist class="flex-auto component"></app-playlist>
 </div>
 <!-- Controls -->
-<app-controls class="component"></app-controls>
+<app-controls 
+  class="component"
+  [playlistState]="playlistState()"
+  (play)="onPlay()"
+  (pause)="onPause()"
+  (stop)="onStop()">
+</app-controls>

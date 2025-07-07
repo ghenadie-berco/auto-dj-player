@@ -4,8 +4,13 @@
   --primary-color: #5451f5;
   --emphasis-color: #2b28ff;
   --text-color: #ffffff;
-  --bg: linear-gradient(to bottom, #3f4c81, #001041);
+  --bg: linear-gradient(to right, #3f4c81, #1a264b);
+  --bg-color: #1a264b;
   --highlight-bg: #001041;
+  --header-bg: linear-gradient(to right, #273560, #001041);
+  --component-header-bg: linear-gradient(to right, #273560, #001041);
+  --component-bg: linear-gradient(to right, #233869, #18233e);
+  --component-bg-color: #18233e;
   --border-color: rgba(255, 255, 255, 0.3);
 }
 
@@ -60,6 +65,35 @@ body {
 .flex-centered {
   align-items: center;
   justify-content: center;
+}
+
+/* Override Webkit scrollbars */
+
+::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
+  background: var(--bg-color);
+  box-sizing: border-box;
+}
+
+::-webkit-scrollbar-thumb {
+  padding: 2px;
+  background: var(--primary-color);
+  border-radius: 2px;
+}
+
+::-webkit-scrollbar-corner {
+  background: #000000;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--component-bg-color);
+}
+
+/* Override Firefox scrollbars */
+* {
+  scrollbar-color: var(--primary-color) var(--component-bg-color);
+  scrollbar-width: thin;
 }
 
 /* Debug */

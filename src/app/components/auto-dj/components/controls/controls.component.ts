@@ -1,7 +1,10 @@
-import { Component } from '@angular/core';
+// Angular
+import { Component, input, output } from '@angular/core';
+// Components
 import { PlayButtonComponent } from './components/play-button/play-button.component';
 import { PauseButtonComponent } from './components/pause-button/pause-button.component';
 import { StopButtonComponent } from './components/stop-button/stop-button.component';
+import { PlaylistState } from '../../auto-dj.types';
 
 @Component({
   selector: 'app-controls',
@@ -15,21 +18,26 @@ import { StopButtonComponent } from './components/stop-button/stop-button.compon
 })
 export class ControlsComponent {
 
-  public playState: 'playing' | 'paused' | 'stopped' = 'stopped';
+  // [ Public ]
+  
+  public playlistState = input.required<PlaylistState>();
+  public play = output<void>();
+  public pause = output<void>();
+  public stop = output<void>();
+
+  // [ Internal ]
+
 
   public onPlay(): void {
-    // TODO: implement
-    this.playState = 'playing';
+    this.play.emit();
   }
 
   public onPause(): void {
-    // TODO: implement
-    this.playState = 'paused';
+    this.pause.emit();
   }
 
   public onStop(): void {
-    // TODO: implement
-    this.playState = 'stopped';
+    this.stop.emit();
   }
 
 }
