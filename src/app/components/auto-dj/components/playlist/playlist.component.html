@@ -1,1 +1,18 @@
-<p>playlist works!</p>
+<h2>Playlist</h2>
+<div class="component flex-auto">
+  <ul class="view list">
+    @for(song of playlist(); track song.id; let idx = $index) {
+      <li class="song flex-row" [class.highlighted]="song.id === activeSongId()">
+        <!-- Song Number -->
+        <span class="song-number">#{{idx + 1}}</span>
+        <!-- Song Info -->
+        <div class="song-info flex-col flex-auto">
+          <div>{{song.title}}</div>
+          <div><b>{{song.artist}}</b></div>
+        </div>
+        <!-- Song Duration -->
+        <span>{{song.duration | songTime }}</span>
+      </li>
+    }
+  </ul>
+</div>

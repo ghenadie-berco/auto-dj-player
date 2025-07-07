@@ -1,0 +1,48 @@
+:host {
+  border: 1px solid var(--border-color);
+  border-radius: 1rem;
+  overflow: hidden;
+
+  display: flex;
+  flex-direction: column;
+  min-height: 120px;
+}
+
+h2 {
+  margin: 0;
+  padding: .25rem;
+  font-weight: 400;
+  text-align: center;
+  background: var(--primary-color);
+}
+
+ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.list {
+  overflow: auto;
+}
+
+.song {
+  align-items: center;
+  justify-content: space-between;
+  padding: .5rem;
+  gap: .75rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.highlighted {
+  color: var(--primary-color);
+  background: var(--highlight-bg);
+}
+
+.song-number {
+  opacity: 0.6;
+}
+
+.song-info {
+  gap: .5rem;
+}

@@ -1,4 +1,6 @@
+// Angular
 import { Component } from '@angular/core';
+// Components
 import { PlaylistComponent } from './components/playlist/playlist.component';
 import { ControlsComponent } from './components/controls/controls.component';
 import { DjDecksComponent } from './components/dj-decks/dj-decks.component';
