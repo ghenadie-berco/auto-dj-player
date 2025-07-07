@@ -16,9 +16,9 @@ export class DjDecksComponent {
 
   public activeSongChange = output<{ songId: string }>();
 
-  public play(queue: PlaylistSong[]): void {
+  public play(queue: PlaylistSong[], transitionTime: number = 0): void {
     this.clear();
-    void this.playQueue(queue);
+    void this.playQueue(queue, transitionTime);
   }
 
   public pause(): void {
@@ -43,7 +43,7 @@ export class DjDecksComponent {
 
   // Private Functions
 
-  private async playQueue(queue: PlaylistSong[]): Promise<void> {
+  private async playQueue(queue: PlaylistSong[], transitionTime: number = 0): Promise<void> {
     // Edge cases
     if (!this.player1Ref()) {
       throw new Error('Player 1 was not found');
@@ -54,15 +54,17 @@ export class DjDecksComponent {
     // Logic
     for (let song of queue) {
       this.activeSongChange.emit({ songId: song.id });
-      await this.playSong(song);
+      await this.playSong(song, transitionTime);
     }
   }
 
-  private async playSong(song: PlaylistSong): Promise<void> {
+  private async playSong(song: PlaylistSong, transitionTime: number = 0): Promise<void> {
     if (this.player1Ref()!.isAvailable()) {
-      await this.player1Ref()!.play(song);
+      await this.player1Ref()!.play(song, transitionTime);
     } else if (this.player2Ref()!.isAvailable()) {
-      await this.player2Ref()!.play(song);
+      await this.player2Ref()!.play(song, transitionTime);
     }
   }
+
+
 }
