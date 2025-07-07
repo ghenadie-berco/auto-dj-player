@@ -4,4 +4,4 @@
 @if (playState === 'playing') {
   <app-pause-button (pause)="onPause()"></app-pause-button>
 }
-<app-stop-button (stop)="onStop()"></app-stop-button>
+<app-stop-button [disabled]="playState === 'stopped'" (stop)="onStop()"></app-stop-button>

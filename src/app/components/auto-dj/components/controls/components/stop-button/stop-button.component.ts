@@ -1,4 +1,4 @@
-import { Component, output } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 
 @Component({
   selector: 'app-stop-button',
@@ -8,6 +8,7 @@ import { Component, output } from '@angular/core';
 })
 export class StopButtonComponent {
 
+  public disabled = input<boolean>();
   public stop = output<void>();
 
 }

@@ -4,18 +4,23 @@ button {
   box-shadow: none;
   padding: .5rem;
 
-  &:hover {
+  &:hover:not(:disabled) {
     svg {
       fill: var(--primary-color);
       cursor: pointer;
     }
   }
 
-  &:active {
+  &:active:not(:disabled) {
     svg {
       fill: var(--emphasis-color);
     }
   }
+}
+
+button:disabled {
+  opacity: 0.5;
+
 }
 
 svg {
