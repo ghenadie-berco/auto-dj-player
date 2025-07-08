@@ -21,6 +21,11 @@ export class DjDecksComponent {
     void this.playQueue(queue, transitionTime);
   }
 
+  public resume(): void {
+    this.player1Ref()!.resume();
+    this.player2Ref()!.resume();
+  }
+
   public pause(): void {
     this.player1Ref()!.pause();
     this.player2Ref()!.pause();

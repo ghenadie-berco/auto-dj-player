@@ -33,10 +33,14 @@ export class AutoDjComponent {
       throw new Error('DJ Decks is not available');
     }
     // Logic
-    // Get queue
-    const queue = this.playlistRef()!.getPlaylist();
-    // Begin playing the playlist
-    this.djDecksRef()!.play(queue, 10);
+    if (this.playlistState() === 'paused') {
+      this.djDecksRef()!.resume();
+    } else {
+      // Get queue
+      const queue = this.playlistRef()!.getPlaylist();
+      // Begin playing the playlist
+      this.djDecksRef()!.play(queue, 10);
+    }
     // Set playlist state
     this.playlistState.set('playing');
   }
